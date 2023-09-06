@@ -356,14 +356,7 @@ class AdminInterface
                         <input type="text" id="admin_hover_text_color" name="<?= $option_name ?>[admin_hover_text_color]" value="<?= self::get_option('admin_hover_text_color') ?>" />
                     </td>
                 </tr>
-                <tr valign="top">
-                    <th scope="row"><?php _e('Admin menu hover text color', 'admin-interface-changer'); ?></th>
-                    <td>
-                        <input type="text" id="admin_hover_text_color" name="<?= $option_name ?>[admin_hover_text_color]" value="<?= self::get_option('admin_hover_text_color') ?>" />
-                    </td>
-                </tr>
-
-
+               
 
                 <tr valign="top">
                     <td colspan="2">
