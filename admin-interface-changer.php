@@ -4,7 +4,7 @@
  * Plugin Name:       Admin Interface Changer
  * Plugin URI:        https://github.com/ericmuigai/admin-interface-changer
  * Description:       Customize Wordpress admin dashboard. Includes changing logo and color scheme change.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires PHP:      5.6
  * Text Domain:       admin-interface-changer
  * Domain Path:       /languages
