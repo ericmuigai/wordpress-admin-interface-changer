@@ -26,7 +26,33 @@ class AdminInterface
 
         add_action('admin_menu', array(self::class, 'add_menu_page'));
         add_action('admin_action_admin_interface_changer_action', [self::class, 'admin_interface_changer_action']);
+        add_action('admin_bar_menu', [self::class, 'add_item'], 10);
     }
+
+    public static function add_item($admin_bar)
+    {
+        $menu_link = self::get_option('admin_menu_item_link');
+        $menu_title = self::get_option('admin_menu_item_title');
+        $admin_menu_item_new_tab = self::get_option('admin_menu_item_new_tab');
+        if ($menu_title) {
+            if("" === $menu_link){
+                $menu_link = false;
+            }
+            $args = array(
+                'id'    => 'home',
+                'title' => $menu_title,
+                'href'  => $menu_link,
+                'meta'  => array(
+                    'title' => __($menu_title, 'lasntgadmin'),
+                ),
+            );
+            if($admin_menu_item_new_tab){
+                $args['meta']['target'] ="__blank";
+            }
+            $admin_bar->add_menu($args);
+        }
+    }
+
     public static function enqueue_assets()
     {
         wp_enqueue_media();
@@ -54,7 +80,7 @@ class AdminInterface
     public static function wordpress_custom_login_logo()
     {
         $logo_url = self::get_option('logo_url');
-        $logo_url = esc_url( apply_filters( 'generate_logo', $logo_url ) );
+        $logo_url = esc_url(apply_filters('generate_logo', $logo_url));
 
         $logo_width = self::get_option('logo_width');
         $logo_height = self::get_option('logo_height');
@@ -99,14 +125,14 @@ class AdminInterface
         }
         if ($admin_menu_color) {
             $style .= "#adminmenu, #wpadminbar, #adminmenuback, #adminmenuwrap, #adminmenu{\n"
-                ."background-color:  #$admin_menu_color !important;\n"
-            ."}\n";
+                . "background-color:  #$admin_menu_color !important;\n"
+                . "}\n";
         }
         if ($admin_sidebar_submenu_color) {
             $style .= "#adminmenu li.wp-has-submenu.wp-not-current-submenu.opensub:hover:after, #adminmenu li.wp-has-submenu.wp-not-current-submenu:focus-within:after\n"
-            ."{"
-                ."\n   border-right-color: #$admin_sidebar_submenu_color !important;\n"
-            ."}";
+                . "{"
+                . "\n   border-right-color: #$admin_sidebar_submenu_color !important;\n"
+                . "}";
             $style .= "
             
             #wp-admin-bar-wp-logo-external,
@@ -196,6 +222,10 @@ class AdminInterface
     public static function get_checkboxes()
     {
         return [
+            "site_name"            => [
+                "value" => self::get_option('site_name'),
+                "element" => "#wp-admin-bar-site-name"
+            ],
             "comments"            => [
                 "value" => self::get_option('comments'),
                 "element" => "#wp-admin-bar-comments"
@@ -324,6 +354,13 @@ class AdminInterface
                         <input type="text" id="admin_hover_text_color" name="<?= $option_name ?>[admin_hover_text_color]" value="<?= self::get_option('admin_hover_text_color') ?>" />
                     </td>
                 </tr>
+                <tr valign="top">
+                    <th scope="row"><?php _e('Admin menu hover text color', 'admin-interface-changer'); ?></th>
+                    <td>
+                        <input type="text" id="admin_hover_text_color" name="<?= $option_name ?>[admin_hover_text_color]" value="<?= self::get_option('admin_hover_text_color') ?>" />
+                    </td>
+                </tr>
+
 
 
                 <tr valign="top">
@@ -339,6 +376,38 @@ class AdminInterface
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <tr valign="top">
+                    <td colspan="2">
+                        <h3>Add menu item</h3>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <td colspan="2">
+                        <table>
+
+                            <tr>
+                                <th scope="row"><?php _e('Menu Item Title', 'admin-interface-changer'); ?></th>
+                                <td>
+                                    <input type="text" id="admin_menu_item_title" name="<?= $option_name ?>[admin_menu_item_title]" value="<?= self::get_option('admin_menu_item_title') ?>" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?php _e('Menu Item Link', 'admin-interface-changer'); ?></th>
+                                <td>
+                                    <input type="text" id="admin_menu_item_link" name="<?= $option_name ?>[admin_menu_item_link]" value="<?= self::get_option('admin_menu_item_link') ?>" />
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <th scope="row"><?php _e('Menu Item Open New Tab?', 'admin-interface-changer'); ?></th>
+                                <td>
+                                    <input type="checkbox" id="admin_menu_item_new_tab" name="<?= $option_name ?>[admin_menu_item_new_tab]"  <?= self::get_option('admin_menu_item_new_tab') !== "" ? "checked" : "" ?> />
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
             </table>
             <input type="submit" value="Save" class="button" />
         </form>
