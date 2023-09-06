@@ -54,6 +54,8 @@ class AdminInterface
     public static function wordpress_custom_login_logo()
     {
         $logo_url = self::get_option('logo_url');
+        $logo_url = esc_url( apply_filters( 'generate_logo', $logo_url ) );
+
         $logo_width = self::get_option('logo_width');
         $logo_height = self::get_option('logo_height');
         $wp_logo_width   = $logo_width ?  $logo_width . "px" : '100%';
@@ -72,6 +74,7 @@ class AdminInterface
 				background-size:100% !important;
 				line-height:inherit !important;
                 background-position: center;
+                 pointer-events: none;
 				}
 				#backtoblog{
 					display:none;
