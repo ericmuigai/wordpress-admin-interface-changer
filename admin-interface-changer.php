@@ -35,9 +35,22 @@ class AdminInterface
     {
         $menu_link = self::get_option('admin_menu_item_link');
         $menu_title = self::get_option('admin_menu_item_title');
+        $logo_menu_url = self::get_option('logo_menu_url');
         $admin_menu_item_new_tab = self::get_option('admin_menu_item_new_tab');
+        
+        if ($logo_menu_url){
+            $args = array(
+                'id'    => 'logo-image',
+                'title' => "<img src='$logo_menu_url' style='height: 32px'/>",
+                'href'  => false,
+                
+            );
+            
+            $admin_bar->add_menu($args);
+        }
+
         if ($menu_title) {
-            if("" === $menu_link){
+            if ("" === $menu_link) {
                 $menu_link = false;
             }
             $args = array(
@@ -48,17 +61,18 @@ class AdminInterface
                     'title' => __($menu_title, 'lasntgadmin'),
                 ),
             );
-            if($admin_menu_item_new_tab){
-                $args['meta']['target'] ="__blank";
+            if ($admin_menu_item_new_tab) {
+                $args['meta']['target'] = "__blank";
             }
             $admin_bar->add_menu($args);
         }
+
     }
 
     public static function enqueue_assets()
     {
         wp_enqueue_media();
-        wp_register_script(self::$name, plugins_url('/assets/js/index.js', __FILE__), ['jquery']);
+        wp_register_script(self::$name, plugins_url('/assets/js/index.js', __FILE__), ['jquery'], '1.0.1');
 
         wp_enqueue_script(self::$name);
 
@@ -228,6 +242,10 @@ class AdminInterface
                 "value" => self::get_option('site_name'),
                 "element" => "#wp-admin-bar-site-name"
             ],
+            "view_shop"            => [
+                "value" => self::get_option('view_shop'),
+                "element" => "#wp-admin-bar-archive"
+            ],
             "comments"            => [
                 "value" => self::get_option('comments'),
                 "element" => "#wp-admin-bar-comments"
@@ -288,6 +306,7 @@ class AdminInterface
         $checkboxes = self::get_checkboxes();
 
         $logo_url = self::get_option('logo_url');
+        $logo_menu_url = self::get_option('logo_menu_url');
         $option_name = self::$name_options;
 
 ?>
@@ -296,7 +315,7 @@ class AdminInterface
             <?php settings_fields(self::$name_options); ?>
             <table class="form-table">
                 <tr valign="top">
-                    <th scope="row"><?php _e('Logo', 'admin-interface-changer'); ?></th>
+                    <th scope="row"><?php _e('Admin Login Logo', 'admin-interface-changer'); ?></th>
                     <td>
 
                         <img src="<?= esc_url($logo_url); ?>" id="logoImage" height="200px" width="200px" class="<?= !$logo_url ? "aic-hide" : "" ?>" /><?= $logo_url ? "<br/>" : "" ?>
@@ -307,6 +326,7 @@ class AdminInterface
                         <input type="button" name="fateh-upload-btn" id="fateh-upload-btn" value="Choose Logo Image">
                     </td>
                 </tr>
+
                 <tr valign="top">
                     <th scope="row"><?php _e('Logo Width X Height', 'admin-interface-changer'); ?></th>
                     <td>
@@ -317,6 +337,19 @@ class AdminInterface
                     </td>
                 </tr>
 
+
+                <tr valign="top">
+                    <th scope="row"><?php _e('Menu Bar Logo', 'admin-interface-changer'); ?></th>
+                    <td>
+
+                        <img src="<?= esc_url($logo_menu_url); ?>" id="logoImageMenu" height="200px" width="200px" class="<?= !$logo_menu_url ? "aic-hide" : "" ?>" /><?= $logo_menu_url ? "<br/>" : "" ?>
+
+                        <input type="hidden" id="logo_menu_url" name="<?= $option_name ?>[logo_menu_url]" value="<?php if (isset($logo_menu_url)) {
+                                                                                                                        echo esc_url($logo_menu_url);
+                                                                                                                    } ?>" />
+                        <input type="button" name="fateh-upload-btn-menu" id="fateh-upload-btn-menu" value="Menu Bar Logo Image">
+                    </td>
+                </tr>
                 <tr valign="top">
                     <td colspan="2">
                         <h3>Colors</h3>
@@ -356,7 +389,7 @@ class AdminInterface
                         <input type="text" id="admin_hover_text_color" name="<?= $option_name ?>[admin_hover_text_color]" value="<?= self::get_option('admin_hover_text_color') ?>" />
                     </td>
                 </tr>
-               
+
 
                 <tr valign="top">
                     <td colspan="2">
@@ -392,11 +425,11 @@ class AdminInterface
                                     <input type="text" id="admin_menu_item_link" name="<?= $option_name ?>[admin_menu_item_link]" value="<?= self::get_option('admin_menu_item_link') ?>" />
                                 </td>
                             </tr>
-                            
+
                             <tr>
                                 <th scope="row"><?php _e('Menu Item Open New Tab?', 'admin-interface-changer'); ?></th>
                                 <td>
-                                    <input type="checkbox" id="admin_menu_item_new_tab" name="<?= $option_name ?>[admin_menu_item_new_tab]"  <?= self::get_option('admin_menu_item_new_tab') !== "" ? "checked" : "" ?> />
+                                    <input type="checkbox" id="admin_menu_item_new_tab" name="<?= $option_name ?>[admin_menu_item_new_tab]" <?= self::get_option('admin_menu_item_new_tab') !== "" ? "checked" : "" ?> />
                                 </td>
                             </tr>
 
